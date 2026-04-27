@@ -1,6 +1,27 @@
 -- =====================================================================================
 -- LSP configuration using Neovim 0.12+ built-in APIs
 -- =====================================================================================
+--
+-- External tool dependencies (replaces Mason)
+-- -----------------------------------------------------------------------
+-- On the main branch, Mason installed and managed LSP server binaries
+-- automatically from within Neovim. That plugin has been removed in favour
+-- of the built-in vim.lsp.config / vim.lsp.enable APIs.
+--
+-- As a result, each LSP server binary must be installed manually via the
+-- appropriate tool for your OS and language toolchain, and must be present
+-- on PATH when Neovim starts:
+--
+--   haskell-language-server-wrapper  via GHCup
+--   clangd                           via your system's LLVM/clang package
+--   gopls                            go install golang.org/x/tools/gopls@latest
+--   pyright-langserver               pip install pyright
+--   rust-analyzer                    rustup component add rust-analyzer
+--   lua-language-server              via your system package manager
+--
+-- If a binary is missing, Neovim will silently skip attaching that server
+-- (no error on startup). Run :checkhealth to verify which servers are found.
+-- =====================================================================================
 
 -- -----------------------------------------------------------------------
 -- Function to setup key mappings related to the LSP provided services.
