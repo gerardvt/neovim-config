@@ -22,7 +22,6 @@
 --   typescript-language-server       npm install -g typescript typescript-language-server
 --   veridian                         cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features
 --   vhdl_ls                          prebuilt binary from github.com/VHDL-LS/rust_hdl
---   marksman                         prebuilt binary from github.com/artempyanykh/marksman/releases
 --
 -- If a binary is missing, Neovim will silently skip attaching that server
 -- (no error on startup). Run :checkhealth to verify which servers are found.
@@ -333,12 +332,6 @@ vim.lsp.config('vhdl_ls', {
     root_markers = { 'vhdl_ls.toml', '.vhdl_ls.toml' },
 })
 
-vim.lsp.config('marksman', {
-    cmd = { 'marksman', 'server' },
-    filetypes = { 'markdown', 'markdown.mdx' },
-    root_markers = { '.marksman.toml', '.git' },
-})
-
 -- -----------------------------------------------------------------------
 -- Enable all configured servers
 -- -----------------------------------------------------------------------
@@ -353,7 +346,6 @@ vim.lsp.enable({
     'ts_ls',        -- JavaScript, TypeScript
     'veridian',     -- Verilog, SystemVerilog
     'vhdl_ls',      -- VHDL
-    'marksman',     -- Markdown
 })
 
 -- -----------------------------------------------------------------------

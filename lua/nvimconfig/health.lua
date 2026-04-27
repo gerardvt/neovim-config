@@ -107,9 +107,6 @@ function M.check()
         { cmd = 'vhdl_ls',                         label = 'vhdl_ls (VHDL)',
           advice = 'Download prebuilt binary from:\n' ..
                    '          https://github.com/VHDL-LS/rust_hdl/releases' },
-        { cmd = 'marksman',                        label = 'marksman (Markdown)',
-          advice = 'Download prebuilt binary from:\n' ..
-                   '          https://github.com/artempyanykh/marksman/releases' },
     }
 
     for _, s in ipairs(servers) do
