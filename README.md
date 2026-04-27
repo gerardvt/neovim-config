@@ -71,7 +71,7 @@ are silently skipped at startup (use `:checkhealth` to verify).
 | Lua | `lua-language-server` | macOS: `brew install lua-language-server`; Linux: system package manager or build from source |
 | Elm | `elm-language-server` | `npm install -g elm @elm-tooling/elm-language-server` (requires Node.js) |
 | JavaScript, TypeScript | `typescript-language-server` | `npm install -g typescript typescript-language-server` (requires Node.js) |
-| Verilog, SystemVerilog | `verible-verilog-ls` | Prebuilt binary: [github.com/chipsalliance/verible/releases](https://github.com/chipsalliance/verible/releases) |
+| Verilog, SystemVerilog | `veridian` | Prebuilt binary: [github.com/vivekmalneedi/veridian/releases](https://github.com/vivekmalneedi/veridian/releases); or `cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features` (omit `--all-features` if C++17 compiler unavailable) |
 | VHDL | `vhdl_ls` | Prebuilt binary: [github.com/VHDL-LS/rust_hdl/releases](https://github.com/VHDL-LS/rust_hdl/releases) |
 | Markdown | `marksman` | Prebuilt binary: [github.com/artempyanykh/marksman/releases](https://github.com/artempyanykh/marksman/releases) |
 

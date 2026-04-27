@@ -20,7 +20,7 @@
 --   lua-language-server              via your system package manager
 --   elm-language-server              npm install -g elm @elm-tooling/elm-language-server
 --   typescript-language-server       npm install -g typescript typescript-language-server
---   verible-verilog-ls               prebuilt binary from github.com/chipsalliance/verible/releases
+--   veridian                         cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features
 --   vhdl_ls                          prebuilt binary from github.com/VHDL-LS/rust_hdl
 --   marksman                         prebuilt binary from github.com/artempyanykh/marksman/releases
 --
@@ -319,8 +319,8 @@ vim.lsp.config('ts_ls', {
 })
 
 -- Covers both Verilog and SystemVerilog
-vim.lsp.config('verible', {
-    cmd = { 'verible-verilog-ls' },
+vim.lsp.config('veridian', {
+    cmd = { 'veridian' },
     filetypes = { 'systemverilog', 'verilog' },
     root_markers = { '.git' },
 })
@@ -351,7 +351,7 @@ vim.lsp.enable({
     'lua_ls',       -- Lua
     'elmls',        -- Elm
     'ts_ls',        -- JavaScript, TypeScript
-    'verible',      -- Verilog, SystemVerilog
+    'veridian',     -- Verilog, SystemVerilog
     'vhdl_ls',      -- VHDL
     'marksman',     -- Markdown
 })

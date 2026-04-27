@@ -98,9 +98,15 @@ function M.check()
           advice = 'npm install -g elm @elm-tooling/elm-language-server  (requires Node.js)' },
         { cmd = 'typescript-language-server',      label = 'ts_ls (JavaScript, TypeScript)',
           advice = 'npm install -g typescript typescript-language-server  (requires Node.js)' },
-        { cmd = 'verible-verilog-ls',              label = 'verible (Verilog, SystemVerilog)',
-          advice = 'Download prebuilt binary from:\n' ..
-                   '          https://github.com/chipsalliance/verible/releases' },
+        { cmd = 'veridian',                        label = 'veridian (Verilog, SystemVerilog)',
+          advice = 'Option 1 - Prebuilt binary (recommended):\n' ..
+                   '          Download from https://github.com/vivekmalneedi/veridian/releases\n' ..
+                   '          or via curl (adjust version and platform as needed):\n' ..
+                   '          curl -L https://github.com/vivekmalneedi/veridian/releases/latest/download/veridian-linux-x64.tar.gz | tar xz\n' ..
+                   '          curl -L https://github.com/vivekmalneedi/veridian/releases/latest/download/veridian-macos.tar.gz | tar xz\n' ..
+                   'Option 2 - Build from source (requires Rust toolchain):\n' ..
+                   '          cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features\n' ..
+                   '          (omit --all-features if a C++17 compiler is not available)' },
         { cmd = 'vhdl_ls',                         label = 'vhdl_ls (VHDL)',
           advice = 'Download prebuilt binary from:\n' ..
                    '          https://github.com/VHDL-LS/rust_hdl/releases' },
