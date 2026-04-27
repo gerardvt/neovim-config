@@ -114,7 +114,6 @@ are silently skipped at startup (use `:checkhealth nvimconfig` to verify).
 | JavaScript, TypeScript | `typescript-language-server` | `npm install -g typescript typescript-language-server` (requires Node.js) |
 | Verilog, SystemVerilog | `veridian` | Linux: `curl -L https://github.com/vivekmalneedi/veridian/releases/download/nightly/veridian-ubuntu-22.04.tar.gz \| tar xz`; macOS or other: `cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features` (omit `--all-features` if C++17 unavailable) |
 | VHDL | `vhdl_ls` | Prebuilt binary: [github.com/VHDL-LS/rust_hdl/releases](https://github.com/VHDL-LS/rust_hdl/releases) |
-| Markdown | `marksman` | Prebuilt binary: [github.com/artempyanykh/marksman/releases](https://github.com/artempyanykh/marksman/releases) |
 
 ### Icons
 
