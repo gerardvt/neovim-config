@@ -23,7 +23,6 @@
 --   verible-verilog-ls               prebuilt binary from github.com/chipsalliance/verible/releases
 --   vhdl_ls                          prebuilt binary from github.com/VHDL-LS/rust_hdl
 --   marksman                         prebuilt binary from github.com/artempyanykh/marksman/releases
---   jdtls                            prebuilt binary from download.eclipse.org/jdtls/snapshots
 --
 -- If a binary is missing, Neovim will silently skip attaching that server
 -- (no error on startup). Run :checkhealth to verify which servers are found.
@@ -340,41 +339,6 @@ vim.lsp.config('marksman', {
     root_markers = { '.marksman.toml', '.git' },
 })
 
--- jdtls cmd is a function that manages a per-project workspace data directory
--- under the Neovim cache path, required by the Eclipse JDT language server.
--- Extra JVM args (e.g. lombok) can be passed via the JDTLS_JVM_ARGS env var.
-vim.lsp.config('jdtls', {
-    cmd = function(dispatchers, config)
-        local workspace_dir = vim.fn.stdpath('cache') .. '/jdtls/workspace'
-        local data_dir = workspace_dir
-        if config.root_dir then
-            data_dir = data_dir .. '/' .. vim.fn.fnamemodify(config.root_dir, ':p:h:t')
-        end
-        local jvm_args = {}
-        local env = os.getenv('JDTLS_JVM_ARGS')
-        for a in string.gmatch((env or ''), '%S+') do
-            table.insert(jvm_args, string.format('--jvm-arg=%s', a))
-        end
-        local config_cmd = vim.list_extend({ 'jdtls', '-data', data_dir }, jvm_args)
-        return vim.lsp.rpc.start(config_cmd, dispatchers, {
-            cwd = config.cmd_cwd,
-            env = config.cmd_env,
-            detached = config.detached,
-        })
-    end,
-    filetypes = { 'java' },
-    root_markers = vim.fn.has('nvim-0.11.3') == 1
-        and {
-            { 'mvnw', 'gradlew', 'settings.gradle', 'settings.gradle.kts', '.git' },
-            { 'build.xml', 'pom.xml', 'build.gradle', 'build.gradle.kts' },
-        }
-        or vim.list_extend(
-            { 'mvnw', 'gradlew', 'settings.gradle', 'settings.gradle.kts', '.git' },
-            { 'build.xml', 'pom.xml', 'build.gradle', 'build.gradle.kts' }
-        ),
-    init_options = {},
-})
-
 -- -----------------------------------------------------------------------
 -- Enable all configured servers
 -- -----------------------------------------------------------------------
@@ -390,7 +354,6 @@ vim.lsp.enable({
     'verible',      -- Verilog, SystemVerilog
     'vhdl_ls',      -- VHDL
     'marksman',     -- Markdown
-    'jdtls',        -- Java
 })
 
 -- -----------------------------------------------------------------------

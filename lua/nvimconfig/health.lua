@@ -107,10 +107,6 @@ function M.check()
         { cmd = 'marksman',                        label = 'marksman (Markdown)',
           advice = 'Download prebuilt binary from:\n' ..
                    '          https://github.com/artempyanykh/marksman/releases' },
-        { cmd = 'jdtls',                           label = 'jdtls (Java)',
-          advice = 'Download prebuilt binary from:\n' ..
-                   '          https://download.eclipse.org/jdtls/snapshots\n' ..
-                   '          Requires a Java JDK on PATH.' },
     }
 
     for _, s in ipairs(servers) do

@@ -74,7 +74,6 @@ are silently skipped at startup (use `:checkhealth` to verify).
 | Verilog, SystemVerilog | `verible-verilog-ls` | Prebuilt binary: [github.com/chipsalliance/verible/releases](https://github.com/chipsalliance/verible/releases) |
 | VHDL | `vhdl_ls` | Prebuilt binary: [github.com/VHDL-LS/rust_hdl/releases](https://github.com/VHDL-LS/rust_hdl/releases) |
 | Markdown | `marksman` | Prebuilt binary: [github.com/artempyanykh/marksman/releases](https://github.com/artempyanykh/marksman/releases) |
-| Java | `jdtls` | Prebuilt binary: [download.eclipse.org/jdtls/snapshots](https://download.eclipse.org/jdtls/snapshots) (requires Java JDK) |
 
 ### Icons
 
