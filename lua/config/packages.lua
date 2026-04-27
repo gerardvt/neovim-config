@@ -12,9 +12,11 @@ vim.pack.add({
     { src = 'https://github.com/lukas-reineke/indent-blankline.nvim' },
     { src = 'https://github.com/j-hui/fidget.nvim' },
     { src = 'https://github.com/mikesmithgh/kitty-scrollback.nvim' },
+    { src = 'https://github.com/nvim-treesitter/nvim-treesitter' },
 })
 
 -- Plugin setup
+require('plugins.treesitter')
 require('plugins.telescope')
 require('plugins.lualine')
 require('plugins.whichkey')

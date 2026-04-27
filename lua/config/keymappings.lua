@@ -2,9 +2,7 @@
 -- General keymappings
 -- ------------------------------------------------------------
 
--- Make sure to setup `mapleader` and `maplocalleader` befor
--- loading lazy.nvim so that mappings are correct.
--- set the "leader key" used as a pprefix for custom key mappings
+-- Set the "leader key" used as a prefix for custom key mappings.
 -- <LocalLeader> is just like <Leader>, except that it is used for mappings
 -- which are local to a buffer.
 -- If they are different, there is a smaller chance of mappings from global
