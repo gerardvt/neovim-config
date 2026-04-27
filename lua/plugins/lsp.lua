@@ -8,38 +8,50 @@
 -- -----------------------------------------------------------------------
 local setupLspBufferKeyBindings = function(buffer)
 
+    -- Rename the variable under your cursor.
     vim.keymap.set('n', 'grn',
         vim.lsp.buf.rename,
         { buffer = buffer, desc = 'LSP: [R]e[n]ame' })
 
+    -- Execute a code action (cursor needs to be on top of an LSP error/suggestion).
     vim.keymap.set({ 'n', 'x' }, 'gra',
         vim.lsp.buf.code_action,
         { buffer = buffer, desc = 'LSP: [G]oto Code [A]ction' })
 
+    -- Find references for the word under your cursor.
     vim.keymap.set('n', 'grr',
         require('telescope.builtin').lsp_references,
         { buffer = buffer, desc = 'LSP: [G]oto [R]eferences' })
 
+    -- Jump to the implementation of the word under your cursor.
     vim.keymap.set('n', 'gri',
         require('telescope.builtin').lsp_implementations,
         { buffer = buffer, desc = 'LSP: [G]oto [I]mplementation' })
 
+    -- Jump to the definition of the word under your cursor.
+    --  To jump back, press <C-t>.
     vim.keymap.set('n', 'grd',
         require('telescope.builtin').lsp_definitions,
         { buffer = buffer, desc = 'LSP: [G]oto [D]efinition' })
 
+    -- Jump to the declaration of the word under cursor.
     vim.keymap.set('n', 'grD',
         vim.lsp.buf.declaration,
         { buffer = buffer, desc = 'LSP: [G]oto [D]eclaration' })
 
+    -- Jump to the type of the word under your cursor.
     vim.keymap.set('n', 'grt',
         require('telescope.builtin').lsp_type_definitions,
         { buffer = buffer, desc = 'LSP: [G]oto [T]ype Definition' })
 
+    -- Fuzzy find all the LSP reported symbols in current document.
+    --  Symbols are things like variables, functions, types, etc.
     vim.keymap.set('n', 'gsd',
         require('telescope.builtin').lsp_document_symbols,
         { buffer = buffer, desc = 'LSP: Open Document Symbols' })
 
+    -- Fuzzy find all the symbols in your current workspace.
+    --  Similar to document symbols, except searches over your entire project.
     vim.keymap.set('n', 'gsw',
         require('telescope.builtin').lsp_dynamic_workspace_symbols,
         { buffer = buffer, desc = 'LSP: Open Workspace Symbols' })
@@ -47,8 +59,10 @@ local setupLspBufferKeyBindings = function(buffer)
 end
 
 -- -----------------------------------------------------------------------
--- Setup autocommands to highlight references of the symbol under the
--- cursor on CursorHold, and clear highlights when the cursor moves.
+-- Setup autocommands to highlight references of the word/symbol
+-- under the cursor when the cursor rests there for a little while,
+-- and clear the highlights when the cursor is moved again.
+-- See `:help CursorHold` for information about when this is executed
 -- -----------------------------------------------------------------------
 local setupWordHighlightAutocommand = function(buffer)
 
@@ -197,16 +211,20 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
         setupLspBufferKeyBindings(buffer)
 
+        -- Toggle inlay hints if the language server supports them.
+        -- This may be unwanted, since they displace some of your code
         if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_inlayHint, buffer) then
             vim.keymap.set('n', '<leader>th', function()
                 vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = buffer }))
             end, { buffer = buffer, desc = 'LSP: [T]oggle Inlay [H]ints' })
         end
 
+        -- Setup autocommands to highlight symbol under cursor in buffer if client supports it
         if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_documentHighlight, buffer) then
             setupWordHighlightAutocommand(buffer)
         end
 
+        -- Enable built-in LSP completion for this buffer if the server supports it
         if client and client:supports_method(vim.lsp.protocol.Methods.textDocument_completion, buffer) then
             vim.lsp.completion.enable(true, client.id, buffer, { autotrigger = true })
         end
