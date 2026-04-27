@@ -31,7 +31,8 @@
 -- ------------------------------------
 -- nvim-treesitter calls the tree-sitter CLI (or falls back to clang/gcc) to
 -- compile downloaded grammar C source into .so files during :TSInstall.
--- Install via: brew install tree-sitter
+-- Install the tree-sitter CLI via your system package manager, or see:
+-- https://github.com/tree-sitter/tree-sitter/blob/master/cli/README.md
 --
 -- The full chain for a new parser:
 --   :TSInstall <lang>
