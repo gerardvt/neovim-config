@@ -112,7 +112,7 @@ are silently skipped at startup (use `:checkhealth nvimconfig` to verify).
 | Lua | `lua-language-server` | macOS: `brew install lua-language-server`; Linux: system package manager or build from source |
 | Elm | `elm-language-server` | `npm install -g elm @elm-tooling/elm-language-server` (requires Node.js) |
 | JavaScript, TypeScript | `typescript-language-server` | `npm install -g typescript typescript-language-server` (requires Node.js) |
-| Verilog, SystemVerilog | `veridian` | Prebuilt binary: [github.com/vivekmalneedi/veridian/releases](https://github.com/vivekmalneedi/veridian/releases); or `cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features` |
+| Verilog, SystemVerilog | `veridian` | Linux: `curl -L https://github.com/vivekmalneedi/veridian/releases/download/nightly/veridian-ubuntu-22.04.tar.gz \| tar xz`; macOS or other: `cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features` (omit `--all-features` if C++17 unavailable) |
 | VHDL | `vhdl_ls` | Prebuilt binary: [github.com/VHDL-LS/rust_hdl/releases](https://github.com/VHDL-LS/rust_hdl/releases) |
 | Markdown | `marksman` | Prebuilt binary: [github.com/artempyanykh/marksman/releases](https://github.com/artempyanykh/marksman/releases) |
 
