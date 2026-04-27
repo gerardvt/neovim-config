@@ -4,11 +4,11 @@
 
 vim.pack.add({
     { src = 'https://github.com/nvim-telescope/telescope.nvim' },
-    { src = 'https://github.com/nvim-lua/plenary.nvim' },
+    { src = 'https://github.com/nvim-lua/plenary.nvim' },          -- required by: telescope
     { src = 'https://github.com/nvim-lualine/lualine.nvim' },
-    { src = 'https://github.com/nvim-tree/nvim-web-devicons' },
+    { src = 'https://github.com/nvim-tree/nvim-web-devicons' },     -- required by: lualine
     { src = 'https://github.com/folke/which-key.nvim' },
-    { src = 'https://github.com/echasnovski/mini.icons' },
+    { src = 'https://github.com/echasnovski/mini.icons' },          -- required by: which-key
     { src = 'https://github.com/lukas-reineke/indent-blankline.nvim' },
     { src = 'https://github.com/j-hui/fidget.nvim' },
     { src = 'https://github.com/mikesmithgh/kitty-scrollback.nvim' },
