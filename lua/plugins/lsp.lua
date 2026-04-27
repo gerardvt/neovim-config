@@ -18,6 +18,12 @@
 --   pyright-langserver               pip install pyright
 --   rust-analyzer                    rustup component add rust-analyzer
 --   lua-language-server              via your system package manager
+--   elm-language-server              npm install -g elm @elm-tooling/elm-language-server
+--   typescript-language-server       npm install -g typescript typescript-language-server
+--   verible-verilog-ls               prebuilt binary from github.com/chipsalliance/verible/releases
+--   vhdl_ls                          prebuilt binary from github.com/VHDL-LS/rust_hdl
+--   marksman                         prebuilt binary from github.com/artempyanykh/marksman/releases
+--   jdtls                            prebuilt binary from download.eclipse.org/jdtls/snapshots
 --
 -- If a binary is missing, Neovim will silently skip attaching that server
 -- (no error on startup). Run :checkhealth to verify which servers are found.
@@ -191,10 +197,201 @@ vim.lsp.config('lua_ls', {
     },
 })
 
+vim.lsp.config('elmls', {
+    cmd = { 'elm-language-server' },
+    filetypes = { 'elm' },
+    root_dir = function(bufnr, on_dir)
+        local fname = vim.api.nvim_buf_get_name(bufnr)
+        local filetype = vim.bo[bufnr].filetype
+        if filetype == 'elm' or (filetype == 'json' and fname:match 'elm%.json$') then
+            on_dir(vim.fs.root(fname, 'elm.json'))
+            return
+        end
+        on_dir(nil)
+    end,
+    init_options = {
+        elmReviewDiagnostics = 'off',
+        skipInstallPackageConfirmation = false,
+        disableElmLSDiagnostics = false,
+        onlyUpdateDiagnosticsOnSave = false,
+    },
+    capabilities = {
+        offsetEncoding = { 'utf-8', 'utf-16' },
+    },
+})
+
+-- ts_ls cmd prefers a project-local typescript-language-server if present
+-- in node_modules/.bin, falling back to the global install on PATH.
+-- root_dir excludes Deno projects (detected via deno.json / deno.lock)
+-- to avoid attaching ts_ls to files managed by the Deno LSP.
+vim.lsp.config('ts_ls', {
+    init_options = { hostInfo = 'neovim' },
+    cmd = function(dispatchers, config)
+        local cmd = 'typescript-language-server'
+        if (config or {}).root_dir then
+            local local_cmd = vim.fs.joinpath(config.root_dir, 'node_modules/.bin', cmd)
+            if vim.fn.executable(local_cmd) == 1 then
+                cmd = local_cmd
+            end
+        end
+        return vim.lsp.rpc.start({ cmd, '--stdio' }, dispatchers)
+    end,
+    filetypes = {
+        'javascript',
+        'javascriptreact',
+        'typescript',
+        'typescriptreact',
+    },
+    root_dir = function(bufnr, on_dir)
+        local root_markers = { 'package-lock.json', 'yarn.lock', 'pnpm-lock.yaml', 'bun.lockb', 'bun.lock' }
+        root_markers = vim.fn.has('nvim-0.11.3') == 1 and { root_markers, { '.git' } }
+            or vim.list_extend(root_markers, { '.git' })
+        local deno_root = vim.fs.root(bufnr, { 'deno.json', 'deno.jsonc' })
+        local deno_lock_root = vim.fs.root(bufnr, { 'deno.lock' })
+        local project_root = vim.fs.root(bufnr, root_markers)
+        if deno_lock_root and (not project_root or #deno_lock_root > #project_root) then
+            return
+        end
+        if deno_root and (not project_root or #deno_root >= #project_root) then
+            return
+        end
+        on_dir(project_root or vim.fn.getcwd())
+    end,
+    handlers = {
+        ['_typescript.rename'] = function(_, result, ctx)
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+            vim.lsp.util.show_document({
+                uri = result.textDocument.uri,
+                range = {
+                    start = result.position,
+                    ['end'] = result.position,
+                },
+            }, client.offset_encoding)
+            vim.lsp.buf.rename()
+            return vim.NIL
+        end,
+    },
+    commands = {
+        ['editor.action.showReferences'] = function(command, ctx)
+            local client = assert(vim.lsp.get_client_by_id(ctx.client_id))
+            local file_uri, position, references = unpack(command.arguments)
+            local quickfix_items = vim.lsp.util.locations_to_items(references, client.offset_encoding)
+            vim.fn.setqflist({}, ' ', {
+                title = command.title,
+                items = quickfix_items,
+                context = { command = command, bufnr = ctx.bufnr },
+            })
+            vim.lsp.util.show_document({
+                uri = file_uri,
+                range = { start = position, ['end'] = position },
+            }, client.offset_encoding)
+            vim.cmd('botright copen')
+        end,
+    },
+    on_attach = function(client, bufnr)
+        vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptSourceAction', function()
+            local source_actions = vim.tbl_filter(function(action)
+                return vim.startswith(action, 'source.')
+            end, client.server_capabilities.codeActionProvider.codeActionKinds)
+            vim.lsp.buf.code_action({
+                context = { only = source_actions, diagnostics = {} },
+            })
+        end, {})
+        vim.api.nvim_buf_create_user_command(bufnr, 'LspTypescriptGoToSourceDefinition', function()
+            local win = vim.api.nvim_get_current_win()
+            local params = vim.lsp.util.make_position_params(win, client.offset_encoding)
+            client:exec_cmd({
+                command = '_typescript.goToSourceDefinition',
+                title = 'Go to source definition',
+                arguments = { params.textDocument.uri, params.position },
+            }, { bufnr = bufnr }, function(err, result)
+                if err then
+                    vim.notify('Go to source definition failed: ' .. err.message, vim.log.levels.ERROR)
+                    return
+                end
+                if not result or vim.tbl_isempty(result) then
+                    vim.notify('No source definition found', vim.log.levels.INFO)
+                    return
+                end
+                vim.lsp.util.show_document(result[1], client.offset_encoding, { focus = true })
+            end)
+        end, { desc = 'Go to source definition' })
+    end,
+})
+
+-- Covers both Verilog and SystemVerilog
+vim.lsp.config('verible', {
+    cmd = { 'verible-verilog-ls' },
+    filetypes = { 'systemverilog', 'verilog' },
+    root_markers = { '.git' },
+})
+
+-- vhdl_ls requires a vhdl_ls.toml library mapping file in the project root
+-- or a .vhdl_ls.toml in the home directory. See: https://github.com/VHDL-LS/rust_hdl
+vim.lsp.config('vhdl_ls', {
+    cmd = { 'vhdl_ls' },
+    filetypes = { 'vhd', 'vhdl' },
+    root_markers = { 'vhdl_ls.toml', '.vhdl_ls.toml' },
+})
+
+vim.lsp.config('marksman', {
+    cmd = { 'marksman', 'server' },
+    filetypes = { 'markdown', 'markdown.mdx' },
+    root_markers = { '.marksman.toml', '.git' },
+})
+
+-- jdtls cmd is a function that manages a per-project workspace data directory
+-- under the Neovim cache path, required by the Eclipse JDT language server.
+-- Extra JVM args (e.g. lombok) can be passed via the JDTLS_JVM_ARGS env var.
+vim.lsp.config('jdtls', {
+    cmd = function(dispatchers, config)
+        local workspace_dir = vim.fn.stdpath('cache') .. '/jdtls/workspace'
+        local data_dir = workspace_dir
+        if config.root_dir then
+            data_dir = data_dir .. '/' .. vim.fn.fnamemodify(config.root_dir, ':p:h:t')
+        end
+        local jvm_args = {}
+        local env = os.getenv('JDTLS_JVM_ARGS')
+        for a in string.gmatch((env or ''), '%S+') do
+            table.insert(jvm_args, string.format('--jvm-arg=%s', a))
+        end
+        local config_cmd = vim.list_extend({ 'jdtls', '-data', data_dir }, jvm_args)
+        return vim.lsp.rpc.start(config_cmd, dispatchers, {
+            cwd = config.cmd_cwd,
+            env = config.cmd_env,
+            detached = config.detached,
+        })
+    end,
+    filetypes = { 'java' },
+    root_markers = vim.fn.has('nvim-0.11.3') == 1
+        and {
+            { 'mvnw', 'gradlew', 'settings.gradle', 'settings.gradle.kts', '.git' },
+            { 'build.xml', 'pom.xml', 'build.gradle', 'build.gradle.kts' },
+        }
+        or vim.list_extend(
+            { 'mvnw', 'gradlew', 'settings.gradle', 'settings.gradle.kts', '.git' },
+            { 'build.xml', 'pom.xml', 'build.gradle', 'build.gradle.kts' }
+        ),
+    init_options = {},
+})
+
 -- -----------------------------------------------------------------------
 -- Enable all configured servers
 -- -----------------------------------------------------------------------
-vim.lsp.enable({ 'hls', 'clangd', 'gopls', 'pyright', 'rust_analyzer', 'lua_ls' })
+vim.lsp.enable({
+    'hls',          -- Haskell (haskell-language-server)
+    'clangd',       -- C, C++, Objective-C
+    'gopls',        -- Go
+    'pyright',      -- Python
+    'rust_analyzer',-- Rust
+    'lua_ls',       -- Lua
+    'elmls',        -- Elm
+    'ts_ls',        -- JavaScript, TypeScript
+    'verible',      -- Verilog, SystemVerilog
+    'vhdl_ls',      -- VHDL
+    'marksman',     -- Markdown
+    'jdtls',        -- Java
+})
 
 -- -----------------------------------------------------------------------
 -- Diagnostic configuration
