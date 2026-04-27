@@ -48,10 +48,6 @@ vim.keymap.set("n", "<leader>j", "<cmd>lprev<CR>zz")
 -- Replace all instances of whatever is under cursor (on line)
 vim.keymap.set("n", "<leader>s", [[:s/\<<C-r><C-w>\>//gI<Left><Left><Left>]])
 
--- Yank into clipboard even if on ssh
-vim.keymap.set('n', '<leader>y', '<Plug>OSCYankOperator')
-vim.keymap.set('v', '<leader>y', '<Plug>OSCYankVisual')
-
 -- Reload without exiting vim
 vim.keymap.set("n", "<leader>rl", "<cmd>source ~/.config/nvim/init.lua<cr>")
 
