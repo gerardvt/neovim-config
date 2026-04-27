@@ -3,19 +3,46 @@
 Personal Neovim configuration using Neovim 0.12+ built-in APIs for plugin
 management, LSP, and completion. No third-party plugin manager required.
 
+---
+
+## Philosophy
+
+The guiding principle of this configuration — specifically the `neovim-0.12`
+branch — is to **minimise the number of third-party plugins** by using
+Neovim's built-in capabilities wherever possible.
+
+Neovim 0.12 introduced three major built-in features that historically
+required external plugins:
+
+- **`vim.pack`** — a built-in package manager, replacing lazy.nvim
+- **`vim.lsp.config` / `vim.lsp.enable`** — built-in LSP server configuration, replacing nvim-lspconfig and Mason
+- **`vim.lsp.completion`** — built-in LSP completion, replacing nvim-cmp and blink.cmp
+
+Fewer plugins means fewer moving parts, fewer compatibility issues between
+plugin versions, and less reliance on the third-party ecosystem keeping pace
+with Neovim's own development. The `main` branch (using lazy.nvim, Mason,
+and blink.cmp) is retained as a reference and for use with older Neovim
+versions.
+
+---
+
 ## Branches
 
-| Branch | Description |
-|---|---|
-| `neovim-0.12` | Current. Uses `vim.pack`, `vim.lsp`, `vim.lsp.completion` |
-| `main` | Legacy. Uses lazy.nvim, Mason, blink.cmp |
+| Branch | Neovim version | Plugin manager | LSP | Completion |
+|---|---|---|---|---|
+| `neovim-0.12` | 0.12+ required | `vim.pack` (built-in) | `vim.lsp` (built-in) | `vim.lsp.completion` (built-in) |
+| `main` | legacy (< 0.12) | lazy.nvim | nvim-lspconfig + Mason | blink.cmp |
 
 ---
 
 ## Requirements
 
-**Neovim 0.12 or later.** The configuration will exit immediately with an
-error message if an older version is detected.
+The version requirement depends on which branch you are using:
+
+- **`neovim-0.12` branch** — requires Neovim 0.12 or later. The configuration
+  will exit immediately with an error message if an older version is detected.
+- **`main` branch** — targets older Neovim versions. No minimum version is
+  enforced at startup.
 
 ---
 
@@ -57,9 +84,23 @@ After install, run `:TSUpdate` inside Neovim to compile all configured parsers.
 
 ### LSP servers
 
+In keeping with the philosophy of minimising plugin dependencies, this
+configuration does **not** use Mason to manage LSP server installations.
+Mason is a Neovim plugin that downloads and manages LSP server binaries from
+within the editor — convenient, but it adds a layer of indirection and
+couples your LSP binary versions to Mason's registry rather than to your
+system's toolchain.
+
+Instead, each LSP server is treated like any other development tool: installed
+once via the appropriate package manager or installer for your language
+toolchain and made available on `PATH`. This keeps LSP binaries consistent
+with the rest of your development environment (the same `gopls` used by your
+editor is the one on your PATH), and removes a class of "works in editor,
+broken in CI" discrepancies.
+
 Each LSP server binary must be installed independently. The server for each
 language is only active when its binary is found on `PATH` — missing servers
-are silently skipped at startup (use `:checkhealth` to verify).
+are silently skipped at startup (use `:checkhealth nvimconfig` to verify).
 
 | Language | Server | Install |
 |---|---|---|
@@ -71,7 +112,7 @@ are silently skipped at startup (use `:checkhealth` to verify).
 | Lua | `lua-language-server` | macOS: `brew install lua-language-server`; Linux: system package manager or build from source |
 | Elm | `elm-language-server` | `npm install -g elm @elm-tooling/elm-language-server` (requires Node.js) |
 | JavaScript, TypeScript | `typescript-language-server` | `npm install -g typescript typescript-language-server` (requires Node.js) |
-| Verilog, SystemVerilog | `veridian` | Prebuilt binary: [github.com/vivekmalneedi/veridian/releases](https://github.com/vivekmalneedi/veridian/releases); or `cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features` (omit `--all-features` if C++17 compiler unavailable) |
+| Verilog, SystemVerilog | `veridian` | Prebuilt binary: [github.com/vivekmalneedi/veridian/releases](https://github.com/vivekmalneedi/veridian/releases); or `cargo install --git https://github.com/vivekmalneedi/veridian.git --all-features` |
 | VHDL | `vhdl_ls` | Prebuilt binary: [github.com/VHDL-LS/rust_hdl/releases](https://github.com/VHDL-LS/rust_hdl/releases) |
 | Markdown | `marksman` | Prebuilt binary: [github.com/artempyanykh/marksman/releases](https://github.com/artempyanykh/marksman/releases) |
 
