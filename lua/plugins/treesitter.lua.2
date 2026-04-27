@@ -1,0 +1,22 @@
+return {
+    "nvim-treesitter/nvim-treesitter",
+    -- REMOVE build = ":TSUpdate" (for now)
+    event = { "BufReadPost", "BufNewFile" }, -- Load only when opening a file
+    
+    -- All your config remains the same:
+    config = function()
+        require("nvim-treesitter.configs").setup({
+            -- List of parsers that must be installed.
+            ensure_installed = { 
+                -- ... (All your listed languages) ...
+            },
+            sync_install = false,
+            auto_install = false,
+            highlight = { enable = true },
+            indent = { enable = true },
+            folding = { enable = true },
+            incremental_selection = { enable = true },
+        })
+    end
+}
+
