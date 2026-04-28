@@ -10,14 +10,11 @@
 --     (nvim_win_hide preserves the buffer so the shell process survives across hides)
 --   - Session persistence: the same buffer is reused across toggles so shell history
 --     and state are maintained for the lifetime of the Neovim session
---   - <esc><esc> to exit terminal mode (not a built-in default in any Neovim version)
+--   - <esc><esc> hides the floating window directly from terminal mode
 --   - border = 'rounded' is set explicitly on the nvim_open_win call because
 --     style = 'minimal' suppresses UI chrome inside the window but does not affect
 --     the border, so winborder (options.lua) cannot be relied on here
 -- =====================================================================================
-
--- Remap leaving 'terminal mode' to double tap esc
-vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
 
 local state = {
     floating = {
@@ -72,3 +69,9 @@ end
 
 vim.api.nvim_create_user_command("Flterm", toggle_terminal, {})
 vim.api.nvim_set_keymap('n', '<leader>t', [[:Flterm<CR>]], { noremap = true, silent = true })
+
+-- <esc><esc> in terminal mode hides the floating window directly, mirroring
+-- what <leader>t does from normal mode outside the terminal.
+vim.keymap.set("t", "<esc><esc>", function()
+    vim.api.nvim_win_hide(state.floating.win)
+end)
