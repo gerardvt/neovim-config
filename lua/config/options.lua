@@ -109,7 +109,12 @@ vim.cmd.colorscheme("unokai")
 --    - "shadow": Drop shadow effect, by blending with the background.
 --    - "single": Single-line box.
 --    - "solid": Adds padding by a single whitespace cell.
+--  - Override the FloatBorder highlight group to use a subtle grey foreground
+--    with no background (fg = '#888888', bg = 'none'). Without this, the border
+--    inherits a background color from the colorscheme that makes it appear as a
+--    thick colored band rather than a thin border line.
 set.winborder = "rounded"
+vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#888888', bg = 'none' })
 
 -- Backspacing (<BS>, <Del>, <C-W>, <C--U>) behavior in insert mode:
 --  - Allow backspacing over autoindent, line breaks, and the start of insert.

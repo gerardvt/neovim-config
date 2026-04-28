@@ -81,6 +81,14 @@ local setupLspBufferKeyBindings = function(buffer)
         require('telescope.builtin').lsp_dynamic_workspace_symbols,
         { buffer = buffer, desc = 'LSP: Open Workspace Symbols' })
 
+    -- Show hover documentation for symbol under cursor.
+    -- Border is set explicitly because the built-in hover handler does not
+    -- inherit the global winborder option. vim.lsp.with() is deprecated in
+    -- 0.13, so passing options directly to hover() is the correct approach.
+    vim.keymap.set('n', 'K', function()
+        vim.lsp.buf.hover({ border = 'rounded' })
+    end, { buffer = buffer, desc = 'LSP: Hover Documentation' })
+
 end
 
 -- -----------------------------------------------------------------------
