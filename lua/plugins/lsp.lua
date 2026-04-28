@@ -28,27 +28,44 @@
 -- =====================================================================================
 
 -- -----------------------------------------------------------------------
--- Function to setup key mappings related to the LSP provided services.
--- Called from the LspAttach autocommand callback.
+-- Neovim 0.11+ built-in default LspAttach keymaps (set automatically,
+-- no configuration required):
+--
+--   grn   vim.lsp.buf.rename()
+--   gra   vim.lsp.buf.code_action()        (normal + visual)
+--   grr   vim.lsp.buf.references()
+--   gri   vim.lsp.buf.implementation()
+--   K     vim.lsp.buf.hover()
+--   <C-s> vim.lsp.buf.signature_help()     (insert mode)
+--   [d/]d diagnostic navigation
+--   <C-w>d / <C-w><C-d>  vim.diagnostic.open_float()
+--
+-- The keymaps below either duplicate these defaults (kept for the explicit
+-- desc label and future customization) or intentionally override them.
 -- -----------------------------------------------------------------------
 local setupLspBufferKeyBindings = function(buffer)
 
-    -- Rename the variable under your cursor.
+    -- Duplicate of the built-in grn default. Kept for the explicit desc
+    -- label and as a reference point for future customization.
     vim.keymap.set('n', 'grn',
         vim.lsp.buf.rename,
         { buffer = buffer, desc = 'LSP: [R]e[n]ame' })
 
-    -- Execute a code action (cursor needs to be on top of an LSP error/suggestion).
+    -- Duplicate of the built-in gra default. Kept for the explicit desc
+    -- label and as a reference point for future customization.
     vim.keymap.set({ 'n', 'x' }, 'gra',
         vim.lsp.buf.code_action,
         { buffer = buffer, desc = 'LSP: [G]oto Code [A]ction' })
 
-    -- Find references for the word under your cursor.
+    -- Intentional override of the built-in grr default: substitutes
+    -- Telescope's fuzzy picker for the built-in quickfix list handler,
+    -- allowing interactive filtering of results.
     vim.keymap.set('n', 'grr',
         require('telescope.builtin').lsp_references,
         { buffer = buffer, desc = 'LSP: [G]oto [R]eferences' })
 
-    -- Jump to the implementation of the word under your cursor.
+    -- Intentional override of the built-in gri default: substitutes
+    -- Telescope's fuzzy picker for the built-in quickfix list handler.
     vim.keymap.set('n', 'gri',
         require('telescope.builtin').lsp_implementations,
         { buffer = buffer, desc = 'LSP: [G]oto [I]mplementation' })
@@ -81,10 +98,11 @@ local setupLspBufferKeyBindings = function(buffer)
         require('telescope.builtin').lsp_dynamic_workspace_symbols,
         { buffer = buffer, desc = 'LSP: Open Workspace Symbols' })
 
-    -- Show hover documentation for symbol under cursor.
-    -- Border is set explicitly because the built-in hover handler does not
-    -- inherit the global winborder option. vim.lsp.with() is deprecated in
-    -- 0.13, so passing options directly to hover() is the correct approach.
+    -- Intentional override of the built-in K default: passes
+    -- { border = 'rounded' } explicitly because the built-in hover handler
+    -- does not inherit the global winborder option. vim.lsp.with() is
+    -- deprecated in 0.13, so passing options directly to hover() is the
+    -- correct approach.
     vim.keymap.set('n', 'K', function()
         vim.lsp.buf.hover({ border = 'rounded' })
     end, { buffer = buffer, desc = 'LSP: Hover Documentation' })
