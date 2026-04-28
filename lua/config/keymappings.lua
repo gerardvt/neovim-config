@@ -11,7 +11,7 @@ vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
 -- Open built-in file explorer
-vim.keymap.set("n", "<leader>cd", vim.cmd.Explore)
+vim.keymap.set("n", "<leader>e", vim.cmd.Explore)
 
 -- Move highlighted lines up/down
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
