@@ -146,12 +146,6 @@ end
 -- -----------------------------------------------------------------------
 vim.opt.completeopt = 'menu,menuone,noselect,popup'
 
--- The completion system uses a separate styling mechanism from standard
--- floating windows: winborder and FloatBorder do not apply to the pumenu
--- or its info popup. completepopup controls the border style of the
--- documentation panel that appears alongside the completion menu.
-vim.opt.completepopup = 'border:rounded'
-
 -- -----------------------------------------------------------------------
 -- Global capabilities: advertise snippet support to all servers so they
 -- can return richer completion items.
