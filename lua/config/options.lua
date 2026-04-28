@@ -113,8 +113,14 @@ vim.cmd.colorscheme("unokai")
 --    with no background (fg = '#888888', bg = 'none'). Without this, the border
 --    inherits a background color from the colorscheme that makes it appear as a
 --    thick colored band rather than a thin border line.
+--    The override is applied on startup and re-applied on every colorscheme
+--    change via a ColorScheme autocmd, since :colorscheme resets all highlights.
 set.winborder = "rounded"
-vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#888888', bg = 'none' })
+local function apply_float_border_hl()
+    vim.api.nvim_set_hl(0, 'FloatBorder', { fg = '#888888', bg = 'none' })
+end
+apply_float_border_hl()
+vim.api.nvim_create_autocmd('ColorScheme', { callback = apply_float_border_hl })
 
 -- Backspacing (<BS>, <Del>, <C-W>, <C--U>) behavior in insert mode:
 --  - Allow backspacing over autoindent, line breaks, and the start of insert.
