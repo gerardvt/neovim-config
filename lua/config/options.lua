@@ -182,3 +182,12 @@ vim.api.nvim_create_autocmd("VimEnter", {
     end,
 })
 
+-- Enable the experimental UI2 core:
+-- UI2 is the native redesign of Neovim’s messaging and command-line architecture.
+-- WHat we gain:
+--   - Get rid of the pesky "Press ENTER to continue" prompts in messages.
+--   - The command line is more "buffer-like," providing syntax highlighting and better
+--     integration with other UI elements.
+--   - Allows Neovim core to be restarted or reconnected without losing the UI state.
+require('vim._core.ui2').enable()
+
