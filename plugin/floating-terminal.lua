@@ -1,3 +1,21 @@
+-- =====================================================================================
+-- Floating terminal toggle
+-- =====================================================================================
+-- Provides a toggleable floating terminal window. Nothing in Neovim 0.12+ replicates
+-- this — the built-in :terminal always opens in a split or the current window.
+--
+-- Features:
+--   - Floating window centered at 80% of screen dimensions
+--   - Toggle show/hide via <leader>t or :Flterm without destroying the shell session
+--     (nvim_win_hide preserves the buffer so the shell process survives across hides)
+--   - Session persistence: the same buffer is reused across toggles so shell history
+--     and state are maintained for the lifetime of the Neovim session
+--   - <esc><esc> to exit terminal mode (not a built-in default in any Neovim version)
+--   - border = 'rounded' is set explicitly on the nvim_open_win call because
+--     style = 'minimal' suppresses UI chrome inside the window but does not affect
+--     the border, so winborder (options.lua) cannot be relied on here
+-- =====================================================================================
+
 -- Remap leaving 'terminal mode' to double tap esc
 vim.keymap.set("t", "<esc><esc>", "<c-\\><c-n>")
 
@@ -8,7 +26,7 @@ local state = {
     }
 }
 
--- Function that oens the builtin terminal in a floating window
+-- Function that opens the builtin terminal in a floating window
 local function open_floating_terminal(opts)
     opts = opts or {}
     local width = opts.width or math.floor(vim.o.columns * 0.8)
