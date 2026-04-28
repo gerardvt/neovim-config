@@ -163,3 +163,22 @@ set.path:append("**")
 set.viminfo = ""
 set.shadafile = "NONE"
 
+-- Handle ANSI escape codes properly when invoked as a pager:
+-- THe following autocommand triggers automatically when nvim is invoked as a pager (i.e.
+-- with the - arg). This allows using nvim to properly handle ANSI escape codes in the contents
+-- being ingested and avoid the display 'garbage' characters.
+-- Calling vim.api.nvim_open_term(0, {}) on the current buffer is the documented way to colorize
+-- raw ANSI termcodes in Neovim. In 0.12 specifically, nvim_open_term() can now be called on a
+-- non-empty buffer.
+vim.api.nvim_create_autocmd("VimEnter", {
+    callback = function()
+      -- If reading from stdin (i.e. used as a pager), colorize ANSI codes
+      if vim.fn.argc() == 0 and not vim.o.insertmode then
+          local buf = vim.api.nvim_get_current_buf()
+          if vim.api.nvim_buf_line_count(buf) > 1 then
+              vim.api.nvim_open_term(buf, {})
+          end
+      end
+    end,
+})
+
