@@ -24,6 +24,7 @@ require('telescope').setup({
 
 local builtin = require('telescope.builtin')
 
+vim.keymap.set('n', '<leader>fk', builtin.keymaps,     { desc = 'Telescope keymaps' })
 vim.keymap.set('n', '<leader>ff', builtin.find_files,  { desc = 'Telescope find files' })
 vim.keymap.set('n', '<leader>fo', builtin.oldfiles,    { desc = 'Telescope old files' })
 vim.keymap.set('n', '<leader>fq', builtin.quickfix,    { desc = 'Telescope quickfix list' })
