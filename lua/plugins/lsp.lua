@@ -376,9 +376,33 @@ vim.lsp.enable({
 
 -- -----------------------------------------------------------------------
 -- Diagnostic configuration
+--
+-- There are three independent inline display options for diagnostics.
+-- They can be enabled in any combination, or all disabled in favour of
+-- the manually triggered float (see below). Enable at most one inline
+-- option at a time to avoid duplicate messages in the buffer.
+--
+-- Option A — virtual_text: appends the message inline at the end of the
+--   affected line. Compact; always visible without any keypress.
+--   Example config:
+--     virtual_text = { source = 'if_many', spacing = 2,
+--                       format = function(d) return d.message end }
+--
+-- Option B — virtual_lines: shows the message on a dedicated line
+--   directly below the affected line (└── style). More readable than
+--   virtual_text; costs an extra line of vertical space per diagnostic.
+--   Example config:
+--     virtual_lines = true
+--
+-- Option C — float only (current): both inline options are disabled.
+--   Diagnostics are visible only via the sign column marker and the
+--   optional underline. The full message is shown on demand by opening
+--   a floating window with <C-w>d (built-in default) or
+--   :lua vim.diagnostic.open_float().
 -- -----------------------------------------------------------------------
 vim.diagnostic.config({
     severity_sort = true,
+    -- Float window config applies to manually triggered floats (<C-w>d).
     float = { border = 'rounded', source = 'if_many' },
     underline = { severity = vim.diagnostic.severity.ERROR },
     signs = vim.g.have_nerd_font and {
@@ -389,14 +413,11 @@ vim.diagnostic.config({
             [vim.diagnostic.severity.HINT]  = '󰌶 ',
         },
     } or {},
-    virtual_text = {
-        source = 'if_many',
-        spacing = 2,
-        format = function(diagnostic)
-            return diagnostic.message
-        end,
-    },
-    virtual_lines = true,
+    -- Option A (disabled): virtual_text = { source = 'if_many', spacing = 2,
+    --                           format = function(d) return d.message end }
+    virtual_text = false,
+    -- Option B (disabled): virtual_lines = true
+    virtual_lines = false,
 })
 
 -- -----------------------------------------------------------------------
