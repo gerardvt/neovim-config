@@ -29,8 +29,8 @@ set.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
 
 -- Screen column highlighting:
 --  - Do not Highlight any columns (colorcolumn = "").
--- set.colorcolumn = ""
-set.colorcolumn = "100"
+-- set.colorcolumn = "100"
+set.colorcolumn = ""
 
 -- Line text display options:
 --  - Do not wrap lines (wrap = false).
