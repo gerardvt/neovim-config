@@ -18,7 +18,6 @@ require('plugins.treesitter')
 require('plugins.telescope')
 require('plugins.whichkey')
 require('plugins.indentblankline')
-require('plugins.kitty-scrollback')
 require('plugins.fidget')
 
 -- LSP servers + completion
