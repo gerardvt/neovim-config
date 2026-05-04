@@ -10,7 +10,6 @@ vim.pack.add({
     { src = 'https://github.com/echasnovski/mini.icons' },          -- required by: which-key
     { src = 'https://github.com/lukas-reineke/indent-blankline.nvim' },
     { src = 'https://github.com/j-hui/fidget.nvim' },
-    { src = 'https://github.com/mikesmithgh/kitty-scrollback.nvim' },
     { src = 'https://github.com/nvim-treesitter/nvim-treesitter' },
 })
 
