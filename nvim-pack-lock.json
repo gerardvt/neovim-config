@@ -8,14 +8,6 @@
       "rev": "d28a3f70721c79e3c5f6693057ae929f3d9c0a03",
       "src": "https://github.com/lukas-reineke/indent-blankline.nvim"
     },
-    "kitty-scrollback.nvim": {
-      "rev": "9342a0e0e5556ce0b7f9dc41c4bdd39ae9dc85dd",
-      "src": "https://github.com/mikesmithgh/kitty-scrollback.nvim"
-    },
-    "lualine.nvim": {
-      "rev": "a905eeebc4e63fdc48b5135d3bf8aea5618fb21c",
-      "src": "https://github.com/nvim-lualine/lualine.nvim"
-    },
     "mini.icons": {
       "rev": "bac6317300e205335df425296570d84322730067",
       "src": "https://github.com/echasnovski/mini.icons"
