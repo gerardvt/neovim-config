@@ -186,7 +186,9 @@ vim.api.nvim_create_autocmd("VimEnter", {
       -- If reading from stdin (i.e. used as a pager), colorize ANSI codes
       if vim.fn.argc() == 0 and not vim.o.insertmode then
           local buf = vim.api.nvim_get_current_buf()
-          if vim.api.nvim_buf_line_count(buf) > 0 then
+          local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+          local has_content = #lines > 1 or (#lines == 1 and lines[1] ~= "")
+          if has_content then
               vim.api.nvim_open_term(buf, {})
           end
       end
